@@ -20,6 +20,7 @@ class Nrf24:
 
 		self.spi = spidev.SpiDev()
 		self.spi.open(0,0)
+		print "init nrf!"
 
 
 	def printSetup(self):
