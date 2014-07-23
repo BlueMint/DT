@@ -16,7 +16,6 @@ class myHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         #remove / from start of string
         self.path = self.path[1:]
-        print self.elapsed
         self.sortRequestType()
 
     #Handler for the POST requests
@@ -52,7 +51,9 @@ class myHandler(BaseHTTPRequestHandler):
             print "Blue: " + self.path[10:13]
         elif self.mode == "stat":
             if not nrf.isSending():
+                print "Sending over RF..."
                 nrf.send(map(ord,"Helloooo"))
+                print "Sent..."
         elif self.mode == "mode":
             print "sure"
 
