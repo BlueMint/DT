@@ -3,17 +3,24 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 from os import curdir, sep
 import cgi
 import sys
+from time
 
 PORT_NUMBER = 10020
 
 #This class will handles any incoming request from
 #the browser 
 class myHandler(BaseHTTPRequestHandler):
+
+	def __init__(self):
+		self.start = time.clock()
+		self.delay = 100
 	
 	#Handler for the GET requests
 	def do_GET(self):
 		#remove / from start of string
 		self.path = self.path[1:]
+		self.elapsed = (time.clock() - start)
+		print self.elapsed
 		self.sortRequestType()
 
 	#Handler for the POST requests
@@ -35,14 +42,24 @@ class myHandler(BaseHTTPRequestHandler):
 	def sortRequestType(self):
 		#send
 		#mode
+			#fire
+			#door
+			#dead
+			#mood
+			#prty
 		#stat
 		#dead
-		print self.path[:4]
-		if self.path[:4] == "send":
+		self.mode = self.path[:4]
+		if self.mode == "send":
 			print "Red: " + self.path[4:7]
 			print "Green: " + self.path[7:10]
 			print "Blue: " + self.path[10:13]
-		elif self.path[:4] == "quit":
+		elif self.mode == "stat":
+			print "huh?"
+		elif self.mode == "mode"
+
+		elif self.mode == "quit":
+			server.socket.close()
 			sys.exit()			
 			
 			
@@ -58,3 +75,5 @@ try:
 except KeyboardInterrupt:
 	print '^C received, shutting down the web server'
 	server.socket.close()
+
+
