@@ -3,17 +3,14 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 from os import curdir, sep
 import cgi
 import sys
-from time
+import time
+from nrf24 import Nrf24
 
 PORT_NUMBER = 10020
 
 #This class will handles any incoming request from
 #the browser 
 class myHandler(BaseHTTPRequestHandler):
-
-	def __init__(self):
-		self.start = time.clock()
-		self.delay = 100
 	
 	#Handler for the GET requests
 	def do_GET(self):
@@ -55,13 +52,20 @@ class myHandler(BaseHTTPRequestHandler):
 			print "Green: " + self.path[7:10]
 			print "Blue: " + self.path[10:13]
 		elif self.mode == "stat":
-			print "huh?"
-		elif self.mode == "mode"
+			if not nrf.isSending():
+    			nrf.send(map(ord,"Helloooo"))
+		elif self.mode == "mode":
+			print "sure"
 
 		elif self.mode == "quit":
 			server.socket.close()
 			sys.exit()			
 			
+
+nrf = Nrf24(cePin=2,csnPin=3,channel=10,payload=8)
+nrf.config()
+nrf.setRADDR("host1")
+nrf.setTADDR("host2")
 			
 try:
 	#Create a web server and define the handler to manage the
