@@ -24,7 +24,8 @@ try:
     while True:
 
         data = ['a']
-
+        print "sending data..."
+        radio.write(data)
         result = radio.write(data)
 
         print(time.strftime("%H:%M:%S", time.localtime()) + " data send --- " + str(result))
