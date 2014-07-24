@@ -1,7 +1,7 @@
-from nrf24 import Nrf24
+from nrf import Nrf24
 import time
 
-nrf = Nrf24(cePin=2,csnPin=3,channel=10,payload=8)
+nrf = Nrf24(cePin=2,csnPin=3,channel=10,payload=32)
 nrf.config()
 nrf.setRADDR("host1")
 nrf.setTADDR("host2")
