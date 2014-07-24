@@ -1,0 +1,6 @@
+Notes:
+
+192.168.0.33 is RPi address
+COM 3 is reciever address
+git reset --hard removes local changes
+git push repo to download
