@@ -26,6 +26,8 @@ import spidev
 import time
 import sys
 
+GPIO.setmode(GPIO.BOARD)
+
 
 def _BV(x):
     return 1 << x
