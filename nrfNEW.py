@@ -18,10 +18,9 @@
 # Select the most appropriate for you by uncommenting one of the
 # two imports.
 # For Raspberry Pi
-#import RPi.GPIO as GPIO
 
-#For BBBB
-import Adafruit_BBIO.GPIO as GPIO
+import RPi.GPIO as GPIO
+
 
 import spidev
 import time
