@@ -4,9 +4,10 @@ from os import curdir, sep
 import cgi
 import sys
 import time
-from nrf import Nrf24
+import serial
 
 PORT_NUMBER = 10020
+ser = serial.Serial('COM4', 9600)
 
 #This class will handles any incoming request from
 #the browser 
@@ -45,15 +46,16 @@ class myHandler(BaseHTTPRequestHandler):
         #stat
         #dead
         self.mode = self.path[:4]
+        self.data = self.path[4:]
+        print self.data
         if self.mode == "send":
             print "Red: " + self.path[4:7]
             print "Green: " + self.path[7:10]
             print "Blue: " + self.path[10:13]
         elif self.mode == "stat":
-            if not nrf.isSending():
-                print "Sending over RF..."
-                nrf.send(map(ord,"Helloooo"))
-                print "Sent..."
+            print "writing to serial"
+            ser.write(self.data)
+            print "serial written"
         elif self.mode == "mode":
             print "sure"
 
@@ -61,11 +63,6 @@ class myHandler(BaseHTTPRequestHandler):
             server.socket.close()
             sys.exit()          
             
-
-nrf = Nrf24(cePin=2,csnPin=3,channel=10,payload=8)
-nrf.config()
-nrf.setRADDR("host1")
-nrf.setTADDR("host2")
             
 try:
     #Create a web server and define the handler to manage the

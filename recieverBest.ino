@@ -15,36 +15,47 @@ RF24 radio(9,10);
 const uint64_t pipe = 0xE8E8F0F0E1LL;
 int lastmsg = 1;
 String theMessage = "";
-String myAddress = "1.2";
+String testMessage = "";
+
+const int redPin = 3;
+const int greenPin = 5;
+const int bluePin = 6;
+const int ground1 = 4;
+const int ground2 = 8;
+const int whiteLed = 7;
+
+String redBrightness = 0;
+String greenBrightness = 0;
+String blueBrightness = 0;
 
 void setup(void){
   Serial.begin(9600);
   radio.begin();
   radio.openReadingPipe(1,pipe);
   radio.startListening();
+  pinMode(redPin, OUTPUT); 
+  pinMode(greenPin, OUTPUT); 
+  pinMode(bluePin, OUTPUT); 
+  pinMode(ground1, OUTPUT);
+  pinMode(ground2, OUTPUT);
+  pinMode(whiteLed, OUTPUT);
+  digitalWrite(ground1, LOW);
+  digitalWrite(ground2, LOW);
 }
+
 void loop(void){
+  digitalWrite(whiteLed, LOW);
   if (radio.available()){
+    digitalWrite(whiteLed, HIGH);
     bool done = false;  
       done = radio.read(msg, 1); 
       char theChar = msg[0];
       if (msg[0] != 2){
         theMessage.concat(theChar);
+        Serial.println(theMessage);
         }
-      else {
-        String sentAddress = "";
-       if (theMessage.length() == messageLength){
-        sentAddress.concat(theMessage[0]); 
-        sentAddress.concat(theMessage[1]); 
-        sentAddress.concat(theMessage[2]); 
-        Serial.println(sentAddress);
-        Serial.println(myAddress);
-        if (sentAddress == myAddress) { 
-       Serial.println(theMessage);
-       Serial.println(theMessage[0,1,2]);
-       }
-     }
-       theMessage= ""; 
       }
-   }
+      Serial.println(theMessage);
 }
+
+
