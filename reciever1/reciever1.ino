@@ -79,12 +79,12 @@ void loop(void){
             String redBrightness = 0;
             String greenBrightness = 0;
             String blueBrightness = 0;
-            sentRoomAddress.concat(theMessage[0]); 
-            sentLightAddress.concat(theMessage[2]);
+            sentMode.concat(theMessage[0]);
+            sentMode.concat(theMessage[1]);
+            sentMode.concat(theMessage[2]);
             sentMode.concat(theMessage[3]);
-            sentMode.concat(theMessage[4]);
-            sentMode.concat(theMessage[5]);
-            sentMode.concat(theMessage[6]);
+            sentRoomAddress.concat(theMessage[4]); 
+            sentLightAddress.concat(theMessage[6]);
             sentData.concat(theMessage[7]);
             sentData.concat(theMessage[8]);
             sentData.concat(theMessage[9]);
