@@ -8,5 +8,7 @@ nrf.setTADDR("host2")
 
 while True:
     if not nrf.isSending():
+        print "sending..."
         nrf.send(map(ord,"Helloooo"))
+        print "sent!"
     time.sleep(5)

@@ -24,7 +24,21 @@ const int ground = 4;
 String redBrightness = 0;
 String greenBrightness = 0;
 String blueBrightness = 0;
-String myAddress = "1.1";
+String myRoomAddress = "1";
+String myLightAddress = "1";
+String sentRoomAddress = "";
+String sentLightAddress = "";
+String correctAddress = "false";
+String fireState = "false";
+String fire = "false";
+String fireCycleOn = "false";
+String doorState = "false";
+long previousMillis = 0;
+long interval = 250;
+long doorPressedAt = 0;
+int currentRedBrightness = 0;
+int currentGreenBrightness = 0;
+int currentBlueBrightness = 0;
 
 
 void setup(void){
@@ -39,6 +53,7 @@ void setup(void){
     radio.startListening();
 }
 void loop(void){
+    unsigned long currentMillis = millis();
     if (radio.available()){
         bool done = false;  
         done = radio.read(msg, 1); 
@@ -46,56 +61,141 @@ void loop(void){
         if (msg[0] != 2){
             theMessage.concat(theChar);
         }
-        else {
-            String sentAddress = "";
+        else{
+            Serial.println("==");
+            Serial.println("  ");
+            Serial.println("==");
+            Serial.print("Message length: ");
+            Serial.println(theMessage.length());
+            Serial.print("The message so far: '");
+            Serial.print(theMessage);
+            Serial.println("'");
+            sentRoomAddress = "";
+            sentLightAddress = "";
+            correctAddress = "false";
+            fireState = "";
             String sentMode = "";
             String sentData = "";
             String redBrightness = 0;
             String greenBrightness = 0;
             String blueBrightness = 0;
-            Serial.println(theMessage.length());
-            if (theMessage.length() >= messageLength){
-                Serial.print("Message: ");
-                Serial.println(theMessage);
-                sentAddress.concat(theMessage[0]); 
-                sentAddress.concat(theMessage[1]); 
-                sentAddress.concat(theMessage[2]);
-                sentMode.concat(theMessage[3]);
-                sentMode.concat(theMessage[4]);
-                sentMode.concat(theMessage[5]);
-                sentMode.concat(theMessage[6]);
-                sentData.concat(theMessage[7]);
-                sentData.concat(theMessage[8]);
-                sentData.concat(theMessage[9]);
-                sentData.concat(theMessage[10]);
-                sentData.concat(theMessage[11]);
-                sentData.concat(theMessage[12]);
-                sentData.concat(theMessage[13]);
-                sentData.concat(theMessage[14]);
-                sentData.concat(theMessage[15]);
-                theMessage= "";
+            sentRoomAddress.concat(theMessage[0]); 
+            sentLightAddress.concat(theMessage[2]);
+            sentMode.concat(theMessage[3]);
+            sentMode.concat(theMessage[4]);
+            sentMode.concat(theMessage[5]);
+            sentMode.concat(theMessage[6]);
+            sentData.concat(theMessage[7]);
+            sentData.concat(theMessage[8]);
+            sentData.concat(theMessage[9]);
+            sentData.concat(theMessage[10]);
+            sentData.concat(theMessage[11]);
+            sentData.concat(theMessage[12]);
+            sentData.concat(theMessage[13]);
+            sentData.concat(theMessage[14]);
+            sentData.concat(theMessage[15]);
+            theMessage= "";
+            Serial.print("Sent Room: ");
+            Serial.print(sentRoomAddress);
+            Serial.print(", Sent Light: ");
+            Serial.print(sentLightAddress);
+            Serial.print(" || My room: ");
+            Serial.print(myRoomAddress);
+            Serial.print(", My light: ");
+            Serial.println(myLightAddress);
+            Serial.print("Sent Mode: ");
+            Serial.println(sentMode);
+            Serial.print("Sent Data: ");
+            Serial.println(sentData);
+            if (sentRoomAddress == myRoomAddress or sentRoomAddress == "*"){
+                if (sentLightAddress == myLightAddress or sentLightAddress == "*"){
+                    correctAddress = "true";
+                }
+            }
+            if (correctAddress == "true") { 
+                Serial.print("That's my address!");
                 if (sentMode == "send"){
                     redBrightness.concat(sentData[0]);
                     redBrightness.concat(sentData[1]);
                     redBrightness.concat(sentData[2]);
+                    greenBrightness.concat(sentData[3]);
+                    greenBrightness.concat(sentData[4]);
+                    greenBrightness.concat(sentData[5]);
+                    blueBrightness.concat(sentData[6]);
+                    blueBrightness.concat(sentData[7]);
+                    blueBrightness.concat(sentData[8]);
                     Serial.print("Red: ");
-                    Serial.println(redBrightness.toInt());
+                    Serial.print(redBrightness.toInt());
+                    Serial.print(" || Green: ");
+                    Serial.print(greenBrightness.toInt());
+                    Serial.print(" || Blue: ");
+                    Serial.println(blueBrightness.toInt());
+                    currentRedBrightness = redBrightness.toInt();
+                    currentGreenBrightness = greenBrightness.toInt();
+                    currentBlueBrightness = blueBrightness.toInt();
                     analogWrite(redPin, redBrightness.toInt());
+                    analogWrite(greenPin, greenBrightness.toInt());
+                    analogWrite(bluePin, blueBrightness.toInt());
                 }
-                Serial.print("Sent Address: ");
-                Serial.println(sentAddress);
-                Serial.print("My real address: ");
-                Serial.println(myAddress);
-                Serial.print("Sent Mode: ");
-                Serial.println(sentMode);
-                Serial.print("Sent Data: ");
-                Serial.println(sentData);
-                if (sentAddress == myAddress) { 
-                    Serial.print("Message Fully Recieved!");
-                    Serial.println(theMessage);
-                    Serial.println(theMessage[0,1,2]);
+                if (sentMode == "fire"){
+                    fireState.concat(sentData[0]);
+                    fireState.concat(sentData[1]);
+                    if (fireState == "on"){
+                        fire = "true";
+                        analogWrite(redPin, 0);
+                        analogWrite(greenPin, 0);
+                        analogWrite(bluePin, 0);
+                    }
+                    else {
+                        fire = "false";
+                        analogWrite(redPin, currentRedBrightness);
+                        analogWrite(greenPin, currentGreenBrightness);
+                        analogWrite(bluePin, currentBlueBrightness);
+                    }
                 }
-            } 
+                if (sentMode == "door"){
+                    doorPressedAt = currentMillis;
+                    doorState = "true";
+                }
+            }
         }
+    }
+    if (fire == "true"){
+        if(currentMillis - previousMillis > interval) {
+            previousMillis = currentMillis;
+            if (fireCycleOn == "true"){
+                analogWrite(redPin, 255);
+                fireCycleOn = "false";
+            }
+            else{
+                analogWrite(redPin, 30);
+                fireCycleOn = "true";
+            }    
+        }        
+    }
+    if (doorState == "true"){
+        analogWrite(redPin, 0);
+        analogWrite(greenPin, 0);
+        analogWrite(bluePin, 0);
+        for (int i = 0; i++, i < 50;){
+            analogWrite(greenPin, (i * 5));
+            delay(20); 
+        }
+        for (int i = 50; i--, i > 0;){
+            analogWrite(greenPin, (i * 5));
+            delay(20); 
+        }
+        for (int i = 0; i++, i < 50;){
+            analogWrite(greenPin, (i * 5));
+            delay(20); 
+        }
+        for (int i = 50; i--, i > 0;){
+            analogWrite(greenPin, (i * 5));
+            delay(20); 
+        }
+        doorState = "false";
+        analogWrite(redPin, currentRedBrightness);
+        analogWrite(greenPin, currentGreenBrightness);
+        analogWrite(bluePin, currentBlueBrightness);
     }
 }
