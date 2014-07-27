@@ -29,8 +29,8 @@ class myHandler(BaseHTTPRequestHandler):
         self.sortRequestType()
 
     def sortRequestType(self):
-        #if self.mode == "rRed" or "rGrn" or "rBlu":
-            #self.do_POST()
+        if self.mode == "rRed" or "rGrn" or "rBlu":
+            self.do_POST()
         print "Current mode: " + self.mode
         if self.mode == "send":
             ser.write("/" + self.path)
@@ -48,12 +48,13 @@ class myHandler(BaseHTTPRequestHandler):
             ser.write("/send" + self.redBrightness + self.greenBrightness + self.blueBrightness)
 
     def do_POST(self):
+        f = "0"
         if self.mode == "rRed":
-            f = redBrightness
+            f = self.redBrightness
         elif self.mode == "rGrn":
-            f = greenBrightness
+            f = self.greenBrightness
         elif self.mode == "rBlu":
-            f = blueBrightness
+            f = self.blueBrightness
         self.send_response(200)
         self.send_header('Content-type','text/html')
         self.end_headers()

@@ -1,6 +1,11 @@
 Notes:
 
-192.168.0.33 is RPi address
-COM 3 is reciever address
-git reset --hard removes local changes
-git push repo to download
+weird things are happening
+I don't quite understand
+why these things are happening
+
+arduino's are working perfect
+
+need to work out 'f' in server.py
+it isn't serving the "read" of netio 
+correctly. Grr.
