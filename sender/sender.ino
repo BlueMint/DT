@@ -13,10 +13,19 @@ message.
 int msg[1];
 RF24 radio(9,10);
 const uint64_t pipe = 0xE8E8F0F0E1LL;
+int fireButton = 6;
+int fireGround = 7;
+
 void setup(void){
 Serial.begin(9600);
 radio.begin();
-radio.openWritingPipe(pipe);}
+pinMode(fireButton, INPUT);
+digitalWrite(fireButton, HIGH);
+pinMode(fireGround, OUTPUT);
+digitalWrite(fireGround, LOW);
+radio.openWritingPipe(pipe);
+}
+
 int incomingByte = 0; 
 String content = "";
 char character;
@@ -24,12 +33,13 @@ char character;
 
 void loop(void){
 
-
     while(Serial.available()) {
         character = Serial.read();
         content.concat(character);
     }
-
+    if (digitalRead(fireButton) == HIGH){
+        content = "door*.*000000000";
+    }
     if (content != "") {
         int messageSize = content.length();
         for (int i = 0; i < messageSize; i++) {

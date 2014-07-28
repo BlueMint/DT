@@ -20,7 +20,8 @@ boolean stringComplete = false;
 void setup(void){
   Serial.begin(9600);
   radio.begin();
-  radio.openWritingPipe(pipe);}
+  radio.openWritingPipe(pipe);
+}
 void loop(void){
   inputString = "";
   while (Serial.available() > 0) {
