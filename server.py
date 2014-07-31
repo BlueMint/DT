@@ -1,4 +1,3 @@
-#!/usr/bin/python
 from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 from os import curdir, sep
 import cgi
@@ -14,18 +13,7 @@ greenBrightness = "000"
 blueBrightness = "000"
 address = "*.*"
 
-#This class will handles any incoming request from
-#the browser 
 class myHandler(BaseHTTPRequestHandler, object):
-
-    '''
-    def __init__(self, request, client_address, server):
-        print "init.."
-        self.redBrightness = 40
-        self.greenBrightness = 15
-        self.blueBrightness = 0
-        super(myHandler, self).__init__(request, client_address, server)
-    '''
 
     def do_GET(self):
         self.path = self.path[1:]
@@ -74,18 +62,6 @@ class myHandler(BaseHTTPRequestHandler, object):
             self.webPage = greenBrightness
         elif self.mode == "rBlu":
             self.webPage = blueBrightness
-        '''
-            print "...but catching"
-            if self.mode == "rRed":
-                self.redBrightness = 0
-                self.webPage = self.redBrightness
-            elif self.mode == "rGrn":
-                self.greenBrightness = 0
-                self.webPage = self.greenBrightness
-            elif self.mode == "rBlu":
-                self.blueBrightness = 0
-                self.webPage = self.blueBrightness
-        '''
         self.send_response(200)
         self.send_header('Content-type','text/html')
         self.end_headers()
@@ -93,12 +69,8 @@ class myHandler(BaseHTTPRequestHandler, object):
             
             
 try:
-    #Create a web server and define the handler to manage the
-    #incoming request
     server = HTTPServer(('', PORT_NUMBER), myHandler)
     print 'Started httpserver on port ' , PORT_NUMBER
-    
-    #Wait forever for incoming htto requests
     server.serve_forever()
 
 except KeyboardInterrupt:

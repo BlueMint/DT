@@ -3,12 +3,7 @@
 #include <RF24_config.h>
 #include <SPI.h>
 
-/*
-This sketch receives strings from sending unit via nrf24 
-and prints them out via serial.  The sketch waits until
-it receives a specific value (2 in this case), then it 
-prints the complete message and clears the message buffer.
-*/
+
 int messageLength = 16;
 int msg[1];
 RF24 radio(9,10);
