@@ -8,6 +8,8 @@ RF24 radio(9,10);
 const uint64_t pipe = 0xE8E8F0F0E1LL;
 int fireButton = 6;
 int fireGround = 7;
+int doorButton = 3;
+int doorGround = 4;
 
 void setup(void){
 Serial.begin(9600);
@@ -16,6 +18,10 @@ pinMode(fireButton, INPUT);
 digitalWrite(fireButton, HIGH);
 pinMode(fireGround, OUTPUT);
 digitalWrite(fireGround, LOW);
+pinMode(doorButton, INPUT);
+digitalWrite(doorButton, HIGH);
+pinMode(doorGround, OUTPUT);
+digitalWrite(doorGround, LOW);
 radio.openWritingPipe(pipe);
 }
 
@@ -31,7 +37,12 @@ void loop(void){
         content.concat(character);
     }
     if (digitalRead(fireButton) == HIGH){
+        content = "fire*.*000000000";
+        Serial.println("fire");
+    }
+    if (digitalRead(doorButton) == LOW){
         content = "door*.*000000000";
+        Serial.println("door");
     }
     if (content != "") {
         int messageSize = content.length();

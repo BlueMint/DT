@@ -24,7 +24,7 @@ String myLightAddress = "1";
 String sentRoomAddress = "";
 String sentLightAddress = "";
 String correctAddress = "false";
-String fireState = "false";
+String fireState = "off";
 String fire = "false";
 String fireCycleOn = "false";
 String doorState = "false";
@@ -60,7 +60,7 @@ void loop(void){
             Serial.println("==");
             Serial.println("  ");
             Serial.println("==");
-            Serial.print("Message length: ");
+            Serial.print("Message lengthh: ");
             Serial.println(theMessage.length());
             Serial.print("The message so far: '");
             Serial.print(theMessage);
@@ -68,7 +68,6 @@ void loop(void){
             sentRoomAddress = "";
             sentLightAddress = "";
             correctAddress = "false";
-            fireState = "";
             String sentMode = "";
             String sentData = "";
             String redBrightness = 0;
@@ -133,9 +132,11 @@ void loop(void){
                     analogWrite(bluePin, blueBrightness.toInt());
                 }
                 if (sentMode == "fire"){
-                    fireState.concat(sentData[0]);
-                    fireState.concat(sentData[1]);
-                    if (fireState == "on"){
+                    Serial.println("FIRE");
+                    Serial.println(fireState);
+                    if (fireState == "off"){
+                        Serial.println("fire");
+                        fireState = "on";
                         fire = "true";
                         analogWrite(redPin, 0);
                         analogWrite(greenPin, 0);
@@ -143,6 +144,7 @@ void loop(void){
                     }
                     else {
                         fire = "false";
+                        fireState = "off";
                         analogWrite(redPin, currentRedBrightness);
                         analogWrite(greenPin, currentGreenBrightness);
                         analogWrite(bluePin, currentBlueBrightness);
@@ -156,6 +158,7 @@ void loop(void){
         }
     }
     if (fire == "true"){
+        
         if(currentMillis - previousMillis > interval) {
             previousMillis = currentMillis;
             if (fireCycleOn == "true"){
